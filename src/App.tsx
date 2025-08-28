@@ -5,8 +5,20 @@ import { Card, CardContent, CardHeader } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
 import { ExternalLink, Play, Volume2, Camera, FileText } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 
 function PortfolioContent() {
+  const [currentPage, setCurrentPage] = useState('home');
+
+  const navigationItems = [
+    { id: 'home', label: 'Home', icon: '🏠' },
+    { id: 'events', label: 'Events', icon: '📅' },
+    { id: 'shop', label: 'Shop', icon: '🛍️' },
+    { id: 'about', label: 'About', icon: '👤' },
+    { id: 'contact', label: 'Contact', icon: '📧' }
+  ];
+
   // Organized content by type with platform links
   const videoItems = [
     {
@@ -224,6 +236,42 @@ function PortfolioContent() {
         {/* Profile Header */}
         <ProfileHeader />
 
+        {/* Navigation */}
+        <div className="flex justify-center">
+          <div className="flex items-center gap-2 p-2 bg-card rounded-xl border shadow-sm">
+            {navigationItems.map((item) => (
+              <Button
+                key={item.id}
+                variant={currentPage === item.id ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setCurrentPage(item.id)}
+                className="relative transition-all duration-300 hover:scale-105"
+              >
+                <span className="mr-2">{item.icon}</span>
+                {item.label}
+                {currentPage === item.id && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-0 bg-primary rounded-md -z-10"
+                    initial={false}
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {currentPage === 'home' && (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-12"
+            >
         {/* Content Summary */}
         <div className="flex flex-wrap justify-center gap-3">
           <Badge variant="outline" className={`${getTypeColor('video')}`}>
@@ -388,6 +436,262 @@ function PortfolioContent() {
             </Card>
           </div>
         </section>
+            </motion.div>
+          )}
+
+          {currentPage === 'events' && (
+            <motion.div
+              key="events"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-8"
+            >
+              <div className="text-center">
+                <h2 className="text-3xl font-bold mb-4">Upcoming Events</h2>
+                <p className="text-muted-foreground mb-8">Join me at these exciting events and workshops</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    title: "Creative Workshop",
+                    date: "Feb 15, 2024",
+                    location: "Design Studio NYC",
+                    description: "Learn advanced photography techniques and creative composition."
+                  },
+                  {
+                    title: "Portfolio Review",
+                    date: "Feb 28, 2024",
+                    location: "Online Event",
+                    description: "Get personalized feedback on your creative portfolio."
+                  },
+                  {
+                    title: "Art Exhibition",
+                    date: "Mar 10, 2024",
+                    location: "Gallery Downtown",
+                    description: "Showcasing latest photography and design work."
+                  }
+                ].map((event, index) => (
+                  <Card key={index} className="hover:shadow-lg transition-all duration-300">
+                    <CardHeader>
+                      <h3 className="font-semibold">{event.title}</h3>
+                      <div className="text-sm text-muted-foreground">
+                        <p>📅 {event.date}</p>
+                        <p>📍 {event.location}</p>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm mb-4">{event.description}</p>
+                      <Button size="sm" className="w-full">Register</Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {currentPage === 'shop' && (
+            <motion.div
+              key="shop"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-8"
+            >
+              <div className="text-center">
+                <h2 className="text-3xl font-bold mb-4">Creative Shop</h2>
+                <p className="text-muted-foreground mb-8">Digital products, prints, and creative resources</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    title: "Photography Presets",
+                    price: "$29",
+                    image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=300&h=200&fit=crop",
+                    description: "Professional Lightroom presets for stunning photos."
+                  },
+                  {
+                    title: "Design Templates",
+                    price: "$19",
+                    image: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=300&h=200&fit=crop",
+                    description: "Modern templates for social media and branding."
+                  },
+                  {
+                    title: "Art Prints",
+                    price: "$45",
+                    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop",
+                    description: "High-quality prints of original photography work."
+                  }
+                ].map((product, index) => (
+                  <Card key={index} className="hover:shadow-lg transition-all duration-300">
+                    <div className="aspect-video overflow-hidden rounded-t-lg">
+                      <img 
+                        src={product.image} 
+                        alt={product.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <h3 className="font-semibold">{product.title}</h3>
+                        <span className="text-lg font-bold text-primary">{product.price}</span>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm mb-4">{product.description}</p>
+                      <Button size="sm" className="w-full">Add to Cart</Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {currentPage === 'about' && (
+            <motion.div
+              key="about"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-8"
+            >
+              <div className="text-center">
+                <h2 className="text-3xl font-bold mb-4">About Me</h2>
+                <p className="text-muted-foreground mb-8">Creative designer passionate about visual storytelling</p>
+              </div>
+              
+              <div className="max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-xl font-semibold mb-3">My Journey</h3>
+                      <p className="text-muted-foreground">
+                        With over 8 years of experience in creative design, I specialize in photography, 
+                        video production, and digital art. My work focuses on capturing authentic moments 
+                        and creating compelling visual narratives.
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-xl font-semibold mb-3">Skills & Expertise</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {['Photography', 'Video Production', 'Graphic Design', 'UI/UX Design', 'Brand Identity', 'Digital Art'].map((skill) => (
+                          <Badge key={skill} variant="secondary">{skill}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-xl font-semibold mb-3">Awards & Recognition</h3>
+                      <ul className="space-y-2 text-muted-foreground">
+                        <li>🏆 Best Photography Portfolio 2023</li>
+                        <li>🎨 Creative Design Award 2022</li>
+                        <li>📸 International Photo Contest Winner</li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="relative">
+                    <div className="aspect-square overflow-hidden rounded-2xl">
+                      <img 
+                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop"
+                        alt="About me"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {currentPage === 'contact' && (
+            <motion.div
+              key="contact"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-8"
+            >
+              <div className="text-center">
+                <h2 className="text-3xl font-bold mb-4">Get In Touch</h2>
+                <p className="text-muted-foreground mb-8">Let's collaborate on your next creative project</p>
+              </div>
+              
+              <div className="max-w-2xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <span>📧</span>
+                          <span>hello@alexmorgan.com</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span>📱</span>
+                          <span>+1 (555) 123-4567</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span>📍</span>
+                          <span>New York, NY</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">Services</h3>
+                      <ul className="space-y-2 text-muted-foreground">
+                        <li>• Portrait Photography</li>
+                        <li>• Brand Design</li>
+                        <li>• Video Production</li>
+                        <li>• Creative Consulting</li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <Card>
+                    <CardHeader>
+                      <h3 className="font-semibold">Send a Message</h3>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium">Name</label>
+                        <input 
+                          type="text" 
+                          className="w-full mt-1 px-3 py-2 border rounded-md bg-background"
+                          placeholder="Your name"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium">Email</label>
+                        <input 
+                          type="email" 
+                          className="w-full mt-1 px-3 py-2 border rounded-md bg-background"
+                          placeholder="your@email.com"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium">Message</label>
+                        <textarea 
+                          className="w-full mt-1 px-3 py-2 border rounded-md bg-background h-24 resize-none"
+                          placeholder="Tell me about your project..."
+                        />
+                      </div>
+                      <Button className="w-full">Send Message</Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
